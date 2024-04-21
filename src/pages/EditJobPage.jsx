@@ -1,11 +1,36 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
+import Spinner from "../components/Spinner"
 
-const AddJobPage = ({ addJobSubmit }) => {
+const EditJobPage = ({ updateJobSubmit }) => {
+  const { id } = useParams()
   const navigate = useNavigate()
 
-  const [fields, setFields] = useState({
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const res = await fetch(`/api/jobs/${id}`)
+
+        if (res.status !== 200) {
+          console.log("Failed to fetch job")
+        }
+
+        const data = await res.json()
+        setJob(data)
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchJob()
+  }, [id])
+
+  const [job, setJob] = useState({
+    id,
     title: "",
     type: "",
     description: "",
@@ -25,7 +50,7 @@ const AddJobPage = ({ addJobSubmit }) => {
     if (name.includes("_")) {
       const [outerKey, innerKey] = name.split("_")
 
-      setFields((prevFields) => ({
+      setJob((prevFields) => ({
         ...prevFields,
         [outerKey]: {
           ...prevFields[outerKey],
@@ -33,7 +58,7 @@ const AddJobPage = ({ addJobSubmit }) => {
         },
       }))
     } else {
-      setFields((prevFields) => ({
+      setJob((prevFields) => ({
         ...prevFields,
         [name]: value,
       }))
@@ -43,17 +68,19 @@ const AddJobPage = ({ addJobSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    addJobSubmit(fields)
-    toast.success("Job Added Successfully")
-    return navigate("/jobs")
+    updateJobSubmit(job)
+    toast.success("Job Edited Successfully")
+    return navigate(`/jobs/${id}`)
   }
 
-  return (
+  return loading ? (
+    <Spinner loading={loading} />
+  ) : (
     <section className="bg-indigo-50">
       <div className="container m-auto max-w-2xl py-24">
         <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
           <form onSubmit={handleSubmit}>
-            <h2 className="text-3xl text-center font-semibold mb-6">Add Job</h2>
+            <h2 className="text-3xl text-center font-semibold mb-6">Edit Job</h2>
 
             <div className="mb-4">
               <label htmlFor="type" className="block text-gray-700 font-bold mb-2">
@@ -63,7 +90,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 id="type"
                 name="type"
                 className="border rounded w-full py-2 px-3"
-                value={fields.type}
+                value={job.type}
                 onChange={handleChange}
                 required
               >
@@ -84,7 +111,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 name="title"
                 className="border rounded w-full py-2 px-3 mb-2"
                 placeholder="eg. Beautiful Apartment In Miami"
-                value={fields.title}
+                value={job.title}
                 onChange={handleChange}
                 required
               />
@@ -99,7 +126,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 className="border rounded w-full py-2 px-3"
                 rows="4"
                 placeholder="Add any job duties, expectations, requirements, etc"
-                value={fields.description}
+                value={job.description}
                 onChange={handleChange}
                 required
               ></textarea>
@@ -113,7 +140,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 id="salary"
                 name="salary"
                 className="border rounded w-full py-2 px-3"
-                value={fields.salary}
+                value={job.salary}
                 onChange={handleChange}
                 required
               >
@@ -139,7 +166,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 name="location"
                 className="border rounded w-full py-2 px-3 mb-2"
                 placeholder="Company Location"
-                value={fields.location}
+                value={job.location}
                 onChange={handleChange}
                 required
               />
@@ -157,7 +184,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 name="company_name"
                 className="border rounded w-full py-2 px-3"
                 placeholder="Company Name"
-                value={fields.company.name}
+                value={job.company.name}
                 onChange={handleChange}
                 required
               />
@@ -176,7 +203,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 className="border rounded w-full py-2 px-3"
                 rows="4"
                 placeholder="What does your company do?"
-                value={fields.company.description}
+                value={job.company.description}
                 onChange={handleChange}
                 required
               ></textarea>
@@ -195,7 +222,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 name="company_contactEmail"
                 className="border rounded w-full py-2 px-3"
                 placeholder="Email address for applicants"
-                value={fields.company.contactEmail}
+                value={job.company.contactEmail}
                 onChange={handleChange}
                 required
               />
@@ -213,7 +240,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 name="company_contactPhone"
                 className="border rounded w-full py-2 px-3"
                 placeholder="Optional phone for applicants"
-                value={fields.company.contactPhone}
+                value={job.company.contactPhone}
                 onChange={handleChange}
                 required
               />
@@ -224,7 +251,7 @@ const AddJobPage = ({ addJobSubmit }) => {
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Add Job
+                Edit Job
               </button>
             </div>
           </form>
@@ -234,4 +261,4 @@ const AddJobPage = ({ addJobSubmit }) => {
   )
 }
 
-export default AddJobPage
+export default EditJobPage

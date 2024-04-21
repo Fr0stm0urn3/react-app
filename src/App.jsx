@@ -11,6 +11,7 @@ import JobsPage from "./pages/JobsPage"
 import JobPage from "./pages/JobPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import AddJobPage from "./pages/AddJobPage"
+import EditJobPage from "./pages/EditJobPage"
 
 const App = () => {
   const addJob = async (fields) => {
@@ -26,21 +27,19 @@ const App = () => {
   }
 
   const deleteJob = async (id) => {
-    try {
-      const res = await fetch(`/api/jobs/${id}`, { method: "DELETE" })
+    await fetch(`/api/jobs/${id}`, {
+      method: "DELETE",
+    })
+    return
+  }
 
-      if (res.status !== 200) {
-        toast.error("Failed to delete the job")
-        return
-      }
+  const editJob = async (job) => {
+    const res = await fetch(`/api/jobs/${job.id}`, {
+      method: "PUT",
+      body: JSON.stringify(job),
+    })
 
-      toast.success("Job Deleted")
-      setIsDeleted(true)
-      navigate("/jobs")
-    } catch (error) {
-      console.log("Failed to delete the job", error)
-      toast.error("Failed to delete the job")
-    }
+    return res.json()
   }
 
   const router = createBrowserRouter(
@@ -52,6 +51,10 @@ const App = () => {
             <Route index element={<JobsPage />} />
             <Route path=":id" element={<JobPage deleteJob={deleteJob} />} />
           </Route>
+          <Route
+            path="/edit-job/:id"
+            element={<EditJobPage updateJobSubmit={editJob} />}
+          />
           <Route path="/add-job" element={<AddJobPage addJobSubmit={addJob} />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
