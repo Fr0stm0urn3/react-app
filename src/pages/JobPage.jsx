@@ -1,12 +1,15 @@
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import Spinner from "../components/Spinner"
 import { FaMapMarker, FaArrowLeft } from "react-icons/fa"
+import { toast } from "react-toastify"
 
-const JobPage = () => {
+const JobPage = ({ deleteJob }) => {
   const [job, setJob] = useState([])
   const [loading, setLoading] = useState(true)
   const { id } = useParams()
+  const [isDeleted, setIsDeleted] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -28,6 +31,20 @@ const JobPage = () => {
     }
     fetchJob()
   }, [id])
+
+  const onDeleteClick = (jobId) => {
+    const confirm = window.confirm("Are you sure you want to delete this listing?")
+
+    if (!confirm) return
+
+    deleteJob(jobId)
+    toast.success("Job deleted successfully")
+    navigate("/jobs")
+  }
+
+  if (isDeleted) {
+    return null
+  }
 
   return loading ? (
     <Spinner loading={loading} />
@@ -100,7 +117,10 @@ const JobPage = () => {
                 >
                   Edit Job
                 </Link>
-                <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block">
+                <button
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
+                  onClick={() => onDeleteClick(job.id)}
+                >
                   Delete Job
                 </button>
               </div>

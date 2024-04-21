@@ -83,20 +83,6 @@
         "contactEmail": "contact@ipsumlorem.com",
         "contactPhone": "555-555-5555"
       }
-    },
-    {
-      "id": "cee3",
-      "title": "Test Name",
-      "type": "Part-Time",
-      "description": "Test Desc",
-      "location": "Test Location",
-      "salary": "$50K - 60K",
-      "company": {
-        "name": "Test Comp Name",
-        "description": "Test Comp Desc",
-        "contactEmail": "l.kakabadze2020@gmail.com",
-        "contactPhone": "Test Phone"
-      }
     }
   ]
 }

@@ -25,6 +25,24 @@ const App = () => {
     return res.json()
   }
 
+  const deleteJob = async (id) => {
+    try {
+      const res = await fetch(`/api/jobs/${id}`, { method: "DELETE" })
+
+      if (res.status !== 200) {
+        toast.error("Failed to delete the job")
+        return
+      }
+
+      toast.success("Job Deleted")
+      setIsDeleted(true)
+      navigate("/jobs")
+    } catch (error) {
+      console.log("Failed to delete the job", error)
+      toast.error("Failed to delete the job")
+    }
+  }
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -32,7 +50,7 @@ const App = () => {
           <Route index element={<HomePage />} />
           <Route path="/jobs">
             <Route index element={<JobsPage />} />
-            <Route path=":id" element={<JobPage />} />
+            <Route path=":id" element={<JobPage deleteJob={deleteJob} />} />
           </Route>
           <Route path="/add-job" element={<AddJobPage addJobSubmit={addJob} />} />
           <Route path="*" element={<NotFoundPage />} />
