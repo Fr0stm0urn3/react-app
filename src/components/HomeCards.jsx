@@ -12,6 +12,7 @@ const HomeCards = () => {
               btnContent: "Browse Jobs",
               btnBgColor: "bg-black",
               btnHover: "hover:bg-gray-700",
+              btnPath: "/jobs",
             }}
           >
             Browse our React jobs and start your career today
@@ -23,6 +24,7 @@ const HomeCards = () => {
               btnContent: "Add Job",
               btnBgColor: "bg-indigo-500",
               btnHover: "hover:bg-indigo-600",
+              btnPath: "/add-job",
             }}
           >
             List your job to find the perfect developer for the role
