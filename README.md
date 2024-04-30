@@ -1,3 +1,14 @@
+Usage:
+This project uses JSON-Server for a mock backend.
+
+Run JSON Server
+The server will run on http://localhost:5000
+npm run server
+
+Run Vite Frontend
+React will run on http://localhost:3000
+npm run dev
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
